@@ -1,0 +1,14 @@
+# Author: JHYeom
+# Description: docker compose for kyhoon's code-server Dockerfile
+version: '3.3'
+
+services:
+  code-server:
+    build:
+      dockerfile: Dockerfile
+      context: .
+      labels:
+        - "com.example.description=code-server image kyhoon's customization"
+    ports:
+      - '127.0.0.1:8080:8080'  
+      - '127.0.0.1:54321:54321'

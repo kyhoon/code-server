@@ -63,6 +63,7 @@ RUN mkdir -p ${VSCODE_EXTENSIONS}/python \
 # Settings-sync extension
 RUN mkdir -p ${VSCODE_EXTENSIONS}/code-settings-sync \
     && curl -JLs https://marketplace.visualstudio.com/_apis/public/gallery/publishers/Shan/vsextensions/code-settings-sync/latest/vspackage | bsdtar --strip-components=1 -xf - -C ${VSCODE_EXTENSIONS}/code-settings-sync extension 
+
 # Remote Development extension
 RUN mkdir -p ${VSCODE_EXTENSIONS}/remote-ssh \
     && curl -JLs https://marketplace.visualstudio.com/_apis/public/gallery/publishers/ms-vscode-remote/vsextensions/remote-ssh/latest/vspackage | bsdtar --strip-components=1 -xf - -C ${VSCODE_EXTENSIONS}/remote-ssh extension

@@ -9,6 +9,8 @@ services:
       context: .
       labels:
         - "com.example.description=code-server image kyhoon's customization"
+    volumes:
+      - ~/.ssh:/home/coder/.ssh
     ports:
-      - '127.0.0.1:8080:8080'  
+      - '127.0.0.1:8080:8080'
       - '127.0.0.1:54321:54321'

@@ -7,35 +7,50 @@ FROM ubuntu:18.04
 # Install packages
 # =========================
 # Common SDK
-RUN sed -i 's/archive.ubuntu.com/mirror.kakao.com/g' /etc/apt/sources.list && \
-    apt-get update && apt-get install --no-install-recommends -y \
-    add-apt-key \
-    build-essential \
-    bsdtar \
-    ca-certificates \
-    curl \
-    dumb-init \
-    gdb \
-    git \
-    gpg \
-    lsb-release \
-    net-tools \
-    openssh-server \
-    openssl \
-    pkg-config \
-    rsync \
-    sudo \
-    wget \
-    xdg-utils \
+RUN sed -i 's/archive.ubuntu.com/mirror.kakao.com/g' /etc/apt/sources.list \
+    && apt-get update && apt-get install --no-install-recommends -y \
+        add-apt-key \
+        build-essential \
+        bsdtar \
+        ca-certificates \
+        curl \
+        dumb-init \
+        gdb \
+        git \
+        gpg \
+        lsb-release \
+        net-tools \
+        openssh-server \
+        openssl \
+        pkg-config \
+        software-properties-common \
+        sudo \
+        wget \
+        xdg-utils \
     && rm -rf /var/lib/apt/lists/*
+
+# Copy OpenSSH configurations
+VOLUME /.ssh
+RUN service ssh start
+
+# Docker Community Edition
+RUN curl -fsSL https://download.docker.com/linux/ubuntu/gpg | apt-key add - \
+    && add-apt-repository \
+       "deb [arch=amd64] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable" \
+    && apt-get update && apt-get install --no-install-recommends -y \
+        containerd.io \
+        docker-ce \
+        docker-ce-cli \
+    && rm -rf /var/lib/apt/lists/* \
+    && service docker start
 
 # Python3 SDK
 RUN apt-get update && apt-get install --no-install-recommends -y \
-    python3 \
-    python3-dev \
-    python3-pip \
-    python3-setuptools \
-    python3-wheel \
+        python3 \
+        python3-dev \
+        python3-pip \
+        python3-setuptools \
+        python3-wheel \
     && rm -rf /var/lib/apt/lists/*
 
 # Set default user
@@ -58,24 +73,19 @@ ENV VSCODE_USER "/home/coder/.local/share/code-server/User"
 ENV VSCODE_EXTENSIONS "/home/coder/.local/share/code-server/extensions"
 RUN mkdir -p ${VSCODE_USER}
 
-# Python extension
-RUN mkdir -p ${VSCODE_EXTENSIONS}/python \
-    && curl -JLs https://marketplace.visualstudio.com/_apis/public/gallery/publishers/ms-python/vsextensions/python/latest/vspackage | bsdtar --strip-components=1 -xf - -C ${VSCODE_EXTENSIONS}/python extension
-
 # Settings-sync extension
 RUN mkdir -p ${VSCODE_EXTENSIONS}/code-settings-sync \
     && curl -JLs https://marketplace.visualstudio.com/_apis/public/gallery/publishers/Shan/vsextensions/code-settings-sync/latest/vspackage | bsdtar --strip-components=1 -xf - -C ${VSCODE_EXTENSIONS}/code-settings-sync extension
-
-# Enable SSH connection
-VOLUME /home/coder/.ssh
-RUN sudo service ssh start
 
 # Create volume for current working directory
 RUN mkdir -p /home/coder/project
 VOLUME /home/coder/project
 WORKDIR /home/coder/project
 
-EXPOSE 8080 54321
+# Entrypoint
+COPY entrypoint.sh /usr/local/bin/
+RUN sudo chmod +x /usr/local/bin/entrypoint.sh
 
-ENTRYPOINT ["dumb-init", "--"]
+EXPOSE 8080 54321
+ENTRYPOINT ["entrypoint.sh"]
 CMD ["code-server"]

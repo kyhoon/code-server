@@ -10,8 +10,9 @@ services:
       labels:
         - "com.example.description=code-server image kyhoon's customization"
     volumes:
+      - ~/.ssh:/.ssh
+      - /var/run/docker.sock:/var/run/docker.sock
       - $PWD:/home/coder/project
-      - ~/.ssh:/home/coder/.ssh
     ports:
       - '127.0.0.1:${PORT}:8080'
       - '127.0.0.1:54321:54321'

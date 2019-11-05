@@ -4,6 +4,7 @@ version: '3.3'
 
 services:
   code-server:
+    container_name: code-server
     build:
       dockerfile: Dockerfile
       context: .
@@ -16,4 +17,3 @@ services:
     ports:
       - '127.0.0.1:${PORT}:8080'
       - '127.0.0.1:54320-54329:54320-54329'
-    image: code-server

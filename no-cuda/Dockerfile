@@ -87,6 +87,6 @@ WORKDIR /home/coder/project
 COPY entrypoint.sh /usr/local/bin/
 RUN sudo chmod +x /usr/local/bin/entrypoint.sh
 
-EXPOSE 8080 54320-54329
+EXPOSE 8080 54321-54329
 ENTRYPOINT ["entrypoint.sh"]
 CMD ["code-server"]

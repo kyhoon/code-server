@@ -6,14 +6,15 @@ services:
   code-server:
     container_name: code-server
     build:
-      dockerfile: Dockerfile
+      dockerfile: no-cuda/Dockerfile
       context: .
       labels:
         - "com.example.description=code-server image kyhoon's customization"
+    image: code-server
     volumes:
       - ~/.ssh:/.ssh
       - /var/run/docker.sock:/var/run/docker.sock
       - $PWD:/home/coder/project
     ports:
       - '127.0.0.1:${PORT}:8080'
-      - '127.0.0.1:54320-54329:54320-54329'
+      - '127.0.0.1:54321-54329:54321-54329'

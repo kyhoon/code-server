@@ -6,10 +6,12 @@ services:
   code-server:
     container_name: code-server
     build:
-      dockerfile: no-cuda/Dockerfile
+      dockerfile: ./Dockerfile
       context: .
       labels:
         - "com.example.description=code-server image kyhoon's customization"
+      args:
+        - BASE_IMAGE=${BASE_IMAGE}
     image: code-server
     volumes:
       - ~/.ssh:/.ssh

@@ -3,12 +3,16 @@
 
 FROM ubuntu:18.04
 
+# Add mirror and update multiverse
+RUN sed -i 's/archive.ubuntu.com/ftp.daum.net/g' /etc/apt/sources.list \
+    && rm -rfv /var/lib/apt/lists/* && sed -i 's/# \(.*multiverse$\)/\1/g' /etc/apt/sources.list \
+    && apt-get update && apt-get -y upgrade
+
 # =========================
 # Install packages
 # =========================
 # Common SDK
-RUN sed -i 's/archive.ubuntu.com/mirror.kakao.com/g' /etc/apt/sources.list \
-    && apt-get update && apt-get install --no-install-recommends -y \
+RUN apt-get install --no-install-recommends -y \
         add-apt-key \
         build-essential \
         bsdtar \
@@ -26,8 +30,7 @@ RUN sed -i 's/archive.ubuntu.com/mirror.kakao.com/g' /etc/apt/sources.list \
         software-properties-common \
         sudo \
         wget \
-        xdg-utils \
-    && rm -rf /var/lib/apt/lists/*
+        xdg-utils
 
 # Copy OpenSSH configurations
 VOLUME /.ssh
@@ -37,21 +40,19 @@ RUN service ssh start
 RUN curl -fsSL https://download.docker.com/linux/ubuntu/gpg | apt-key add - \
     && add-apt-repository \
        "deb [arch=amd64] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable" \
-    && apt-get update && apt-get install --no-install-recommends -y \
+    && apt-get install --no-install-recommends -y \
         containerd.io \
         docker-ce \
         docker-ce-cli \
-    && rm -rf /var/lib/apt/lists/* \
     && service docker start
 
 # Python3 SDK
-RUN apt-get update && apt-get install --no-install-recommends -y \
+RUN apt-get install --no-install-recommends -y \
         python3 \
         python3-dev \
         python3-pip \
         python3-setuptools \
-        python3-wheel \
-    && rm -rf /var/lib/apt/lists/*
+        python3-wheel
 
 # Set default user
 RUN groupadd -r coder \
@@ -86,6 +87,6 @@ WORKDIR /home/coder/project
 COPY entrypoint.sh /usr/local/bin/
 RUN sudo chmod +x /usr/local/bin/entrypoint.sh
 
-EXPOSE 8080 54320-54329
+EXPOSE 8080 54321-54329
 ENTRYPOINT ["entrypoint.sh"]
 CMD ["code-server"]

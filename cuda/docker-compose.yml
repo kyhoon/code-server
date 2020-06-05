@@ -13,7 +13,6 @@ services:
       args:
         - BASE_IMAGE=${BASE_IMAGE}
     image: code-server
-    runtime: nvidia
     volumes:
       - ~/.ssh:/.ssh
       - /var/run/docker.sock:/var/run/docker.sock

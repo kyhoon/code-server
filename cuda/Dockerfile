@@ -1,7 +1,8 @@
 # Author: kyhoon
 # modified from Korean locale docker container (ubuntu 18.04) by JHYeom
 
-FROM ubuntu:18.04
+ARG BASE_IMAGE
+FROM $BASE_IMAGE
 
 # Set environment variables for CUDA
 ENV PATH /usr/local/cuda/bin/:$PATH
